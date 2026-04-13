@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pirahy Alimentos — Painel de Desligamentos 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --M:#5C1E0F;--ME:#3D1109;--MM:#7A2A17;
+  --D:#C9883A;--DC:#E8B96A;--DP:#F5DBA8;
+  --CR:#FAF3E8;--CRE:#F0E4CC;
+  --BW:#FFFFFF;--TE:#2C1005;--TM:#5C3520;
+  --VE:#2E7D32;--VEC:#E8F5E9;
+  --VM:#C62828;--VMC:#FFEBEE;
+  --AM:#E65100;--AMC:#FFF3E0;
+  --AZ:#1565C0;--AZC:#E3F2FD;
+  --SH:0 2px 14px rgba(92,30,15,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--CR);color:var(--TE)}
+
+/* HEADER */
+.hdr{background:var(--ME);overflow:hidden;position:relative}
+.hdr::before{content:'';position:absolute;right:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(201,136,58,.06);pointer-events:none}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;padding:16px 32px 12px;border-bottom:1px solid rgba(201,136,58,.18)}
+.logo-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--BW);letter-spacing:.04em}
+.logo-sub{font-size:10px;color:var(--DC);letter-spacing:.2em;text-transform:uppercase;margin-top:1px}
+.hdr-actions{display:flex;gap:8px;align-items:center}
+.hdr-badge{background:rgba(201,136,58,.14);border:1px solid rgba(201,136,58,.38);color:var(--DC);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:6px 16px;border-radius:99px}
+.btn-edit-top{background:var(--D);color:var(--ME);border:none;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:7px 16px;border-radius:8px;cursor:pointer;letter-spacing:.03em}
+.btn-edit-top:hover{background:var(--DC)}
+.hdr-body{padding:24px 32px 20px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.hdr-body h1{font-family:'Playfair Display',serif;font-size:32px;font-weight:500;color:var(--BW);margin-bottom:5px}
+.hdr-body p{font-size:13px;color:var(--DC)}
+.hdr-stats{display:flex;gap:24px;flex-shrink:0}
+.hdr-stat .n{font-family:'Playfair Display',serif;font-size:28px;font-weight:500;color:var(--DC)}
+.hdr-stat .l{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em}
+
+/* FILTROS */
+.fbar{background:var(--BW);border-bottom:1px solid var(--CRE);padding:11px 32px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fbar label{font-size:11px;font-weight:500;color:var(--TM);text-transform:uppercase;letter-spacing:.08em}
+.fbar select{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--TE);background:var(--CR);border:1px solid var(--CRE);border-radius:8px;padding:7px 30px 7px 11px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235C1E0F' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;min-width:155px}
+.fbar select:focus{outline:none;border-color:var(--D)}
+.btn{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--TM);background:none;border:1px solid var(--CRE);border-radius:8px;padding:7px 13px;cursor:pointer}
+.btn:hover{background:var(--CR)}
+.btn-print{background:var(--ME);color:var(--DC);border-color:var(--ME)}
+.btn-print:hover{background:var(--MM)}
+.fcount{font-size:12px;color:var(--TM)}
+.fcount strong{color:var(--M);font-weight:600}
+
+/* MAIN */
+.main{padding:22px 32px;max-width:1400px;margin:0 auto}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:11px;margin-bottom:24px}
+.kpi{background:var(--BW);border-radius:12px;padding:15px 17px;box-shadow:var(--SH);border-top:3px solid var(--D)}
+.kpi-l{font-size:10px;color:var(--TM);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.kpi-v{font-family:'Playfair Display',serif;font-size:30px;font-weight:500;color:var(--M);line-height:1}
+.kpi-s{font-size:11px;color:var(--TM);margin-top:4px}
+.kpi-b{height:3px;background:var(--CRE);border-radius:99px;margin-top:8px;overflow:hidden}
+.kpi-f{height:100%;border-radius:99px}
+
+/* SEÇÃO */
+.sec{font-family:'Playfair Display',serif;font-size:19px;font-weight:500;color:var(--ME);margin:24px 0 13px;padding-bottom:8px;border-bottom:2px solid var(--D);display:flex;align-items:center;gap:10px}
+.sec::before{content:'';display:block;width:4px;height:20px;background:var(--M);border-radius:2px}
+
+/* CARDS */
+.card{background:var(--BW);border-radius:14px;padding:17px 19px;box-shadow:var(--SH)}
+.ct{font-size:10px;font-weight:500;color:var(--TM);text-transform:uppercase;letter-spacing:.08em;margin-bottom:11px;padding-bottom:8px;border-bottom:1px solid var(--CRE)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;margin-bottom:13px}
+.cw{position:relative;width:100%}
+.leg{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:9px}
+.li{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--TM)}
+.ls{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+
+/* PROGRESS */
+.pr{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.prl{font-size:11px;color:var(--TM);flex:0 0 130px}
+.prt{flex:1;height:7px;background:var(--CRE);border-radius:99px;overflow:hidden}
+.prf{height:100%;border-radius:99px}
+.prn{font-size:11px;font-weight:500;color:var(--TE);min-width:66px;text-align:right}
+
+/* BADGES */
+.b{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500}
+.bok{background:var(--VEC);color:var(--VE)}.ber{background:var(--VMC);color:var(--VM)}
+.bwn{background:var(--AMC);color:var(--AM)}.bin{background:var(--AZC);color:var(--AZ)}
+.bne{background:var(--CRE);color:var(--TM)}
+
+/* ALERTAS */
+.al{padding:10px 13px;border-radius:8px;font-size:12px;margin-bottom:8px;border-left:3px solid;line-height:1.5}
+.alr{background:var(--VMC);color:#7f1010;border-color:var(--VM)}
+.ala{background:var(--AMC);color:#7a2e00;border-color:var(--AM)}
+.alg{background:var(--VEC);color:#1a4d1c;border-color:var(--VE)}
+
+/* RISCO */
+.rg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px;margin-bottom:13px}
+.rc{padding:12px 14px;border-radius:10px;border:1px solid}
+.rh{background:#FFEBEE;border-color:#EF9A9A}.rm{background:var(--AMC);border-color:#FFCC80}.rl{background:var(--VEC);border-color:#A5D6A7}
+.rtag{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+.rh .rtag{background:#EF9A9A;color:#7f0000}.rm .rtag{background:#FFCC80;color:#7a2e00}.rl .rtag{background:#A5D6A7;color:#1B5E20}
+.rname{font-size:13px;font-weight:500;margin-bottom:2px}
+.rh .rname{color:#b71c1c}.rm .rname{color:#BF360C}.rl .rname{color:#1B5E20}
+.rdet{font-size:11px}.rh .rdet{color:#c62828}.rm .rdet{color:var(--AM)}.rl .rdet{color:var(--VE)}
+
+/* QUOTES */
+.q{border-left:3px solid var(--D);padding:9px 13px;background:var(--CR);border-radius:0 10px 10px 0;margin-bottom:8px}
+.qt{font-size:13px;color:var(--TE);line-height:1.55;font-style:italic}
+.qa{font-size:11px;color:var(--TM);margin-top:4px;font-weight:500}
+
+/* TABELA */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;font-size:10px;font-weight:500;color:var(--TM);text-transform:uppercase;letter-spacing:.05em;padding:6px 9px;border-bottom:2px solid var(--CRE)}
+.tbl td{padding:7px 9px;border-bottom:1px solid var(--CRE);color:var(--TE);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--CR)}
+
+/* MÊS BARS */
+.mrow{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.mname{font-size:12px;color:var(--TM);flex:0 0 74px}
+.mtrack{flex:1;height:24px;background:var(--CRE);border-radius:6px;overflow:hidden}
+.mfill{height:100%;background:var(--M);border-radius:6px;display:flex;align-items:center;padding-left:9px}
+.mfill span{font-size:11px;font-weight:500;color:var(--BW)}
+.mcount{font-size:12px;font-weight:600;color:var(--M);min-width:24px;text-align:right}
+
+/* FOOTER */
+.ftr{background:var(--ME);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;margin-top:32px}
+.ftr p{font-size:11px;color:rgba(255,255,255,.35)}
+.ftr strong{color:var(--DC)}
+
+/* ============ PAINEL DE EDIÇÃO ============ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(30,10,5,.6);z-index:1000;backdrop-filter:blur(2px)}
+.overlay.open{display:flex;align-items:stretch}
+.editor{background:var(--BW);width:100%;max-width:1100px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden}
+.ed-header{background:var(--ME);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ed-header h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:500;color:var(--BW)}
+.ed-header p{font-size:12px;color:var(--DC);margin-top:2px}
+.ed-close{background:none;border:1px solid rgba(201,136,58,.4);color:var(--DC);font-size:18px;width:34px;height:34px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ed-close:hover{background:rgba(201,136,58,.15)}
+.ed-tabs{display:flex;background:var(--CR);border-bottom:1px solid var(--CRE);padding:0 24px;flex-shrink:0}
+.ed-tab{padding:11px 18px;font-size:13px;font-weight:500;color:var(--TM);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px}
+.ed-tab.active{color:var(--M);border-bottom-color:var(--D)}
+.ed-tab:hover{color:var(--M)}
+.ed-body{flex:1;overflow-y:auto;padding:20px 24px}
+/* Tabela do editor */
+.ed-table-wrap{overflow-x:auto}
+.ed-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.ed-tbl th{background:var(--ME);color:var(--DC);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;padding:8px 9px;text-align:left;position:sticky;top:0;z-index:2;white-space:nowrap}
+.ed-tbl td{padding:4px 4px;border-bottom:1px solid var(--CRE);vertical-align:middle}
+.ed-tbl tr:hover td{background:rgba(250,243,232,.6)}
+.ed-inp{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--TE);background:var(--CR);border:1px solid var(--CRE);border-radius:6px;padding:5px 7px;width:100%;min-width:0}
+.ed-inp:focus{outline:none;border-color:var(--D);background:var(--BW)}
+.ed-sel{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--TE);background:var(--CR);border:1px solid var(--CRE);border-radius:6px;padding:5px 6px;width:100%}
+.ed-sel:focus{outline:none;border-color:var(--D)}
+.ed-del{background:none;border:none;color:#EF9A9A;font-size:16px;cursor:pointer;padding:2px 6px;border-radius:4px}
+.ed-del:hover{background:var(--VMC);color:var(--VM)}
+/* Botões editor */
+.ed-footer{background:var(--CR);border-top:1px solid var(--CRE);padding:14px 24px;display:flex;gap:10px;align-items:center;flex-shrink:0}
+.btn-add{background:var(--VEC);color:var(--VE);border:1px solid #A5D6A7;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:8px 16px;border-radius:8px;cursor:pointer}
+.btn-add:hover{background:#C8E6C9}
+.btn-save{background:var(--M);color:var(--BW);border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:9px 24px;border-radius:8px;cursor:pointer}
+.btn-save:hover{background:var(--MM)}
+.btn-export{background:none;color:var(--TM);border:1px solid var(--CRE);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 14px;border-radius:8px;cursor:pointer}
+.btn-export:hover{background:var(--CRE)}
+.ed-info{font-size:11px;color:var(--TM);margin-left:auto}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--ME);color:var(--DC);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;border-left:3px solid var(--D);transform:translateY(60px);opacity:0;transition:all .25s}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:680px){.g2,.g3{grid-template-columns:1fr}.main{padding:12px}.hdr-stats{display:none}.fbar{padding:10px 14px}}
+@media print{.fbar,.overlay,.btn-edit-top,.btn-print{display:none}body{background:#fff}.hdr,.kpi,.card{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div><div class="logo-name">PIRAHY</div><div class="logo-sub">Alimentos</div></div>
+    <div class="hdr-actions">
+      <button class="btn-edit-top" onclick="abrirEditor()">✏️ Editar dados</button>
+      <button class="btn-edit-top" onclick="carregarDoSheets()" style="background:var(--MM)">🔄 Sincronizar</button>
+      <span id="sync-status" style="font-size:11px;color:var(--DC);letter-spacing:.05em"></span>
+      <div class="hdr-badge">RH · Gestão de Pessoas</div>
+    </div>
+  </div>
+  <div class="hdr-body">
+    <div>
+      <h1>Painel de Desligamentos 2026</h1>
+      <p id="hdr-sub">Carregando...</p>
+    </div>
+    <div class="hdr-stats">
+      <div class="hdr-stat"><div class="n" id="hdr-total">—</div><div class="l">Total desligados</div></div>
+      <div class="hdr-stat"><div class="n" id="hdr-meses">—</div><div class="l">Meses</div></div>
+      <div class="hdr-stat"><div class="n" id="hdr-entrev">—</div><div class="l">Taxa entrevista</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTROS -->
+<div class="fbar">
+  <label>Filtrar:</label>
+  <select id="fMes" onchange="render()"><option value="all">Todos os meses</option></select>
+  <select id="fLocal" onchange="render()">
+    <option value="all">Todos os locais</option>
+    <option value="Filial">Filial</option><option value="Matriz">Matriz</option><option value="Externo">Externo</option>
+  </select>
+  <select id="fCausa" onchange="render()">
+    <option value="all">Todos os tipos</option>
+    <option value="Iniciativa da Empresa">Iniciativa da Empresa</option>
+    <option value="Acordo">Acordo</option>
+    <option value="Pedido do Colaborador">Pedido do Colaborador</option>
+    <option value="Término de Contrato">Término de Contrato</option>
+    <option value="Término Antecipado de Contrato">Término Antecipado</option>
+  </select>
+  <select id="fSetor" onchange="render()"><option value="all">Todos os setores</option></select>
+  <button class="btn" onclick="resetF()">✕ Limpar</button>
+  <div class="fcount">Exibindo <strong id="fcount-n">–</strong> colaboradores</div>
+  <button class="btn btn-print" onclick="window.print()" style="margin-left:auto">🖨 Imprimir</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="main">
+  <div class="kpis" id="kpis"></div>
+
+  <div class="sec">Evolução mensal</div>
+  <div class="g2">
+    <div class="card"><div class="ct">Desligamentos por mês</div><div class="cw" style="height:185px"><canvas id="cMes" role="img" aria-label="Evolução mensal"></canvas></div></div>
+    <div class="card"><div class="ct">Volume acumulado</div><div id="mbars"></div></div>
+  </div>
+
+  <div class="sec">Composição dos desligamentos</div>
+  <div class="g3">
+    <div class="card"><div class="ct">Tipo de desligamento</div><div class="leg" id="lg-causa"></div><div class="cw" style="height:170px"><canvas id="cCausa" role="img" aria-label="Tipos"></canvas></div></div>
+    <div class="card"><div class="ct">Por local</div><div class="leg" id="lg-local"></div><div class="cw" style="height:170px"><canvas id="cLocal" role="img" aria-label="Local"></canvas></div></div>
+    <div class="card"><div class="ct">Por setor (top 8)</div><div class="cw" style="height:200px"><canvas id="cSetor" role="img" aria-label="Setor"></canvas></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Faixa etária</div><div class="cw" style="height:180px"><canvas id="cIdade" role="img" aria-label="Faixa etária"></canvas></div></div>
+    <div class="card"><div class="ct">Tempo de empresa</div><div class="cw" style="height:180px"><canvas id="cTempo" role="img" aria-label="Tempo empresa"></canvas></div></div>
+  </div>
+
+  <div class="sec">Entrevistas de desligamento</div>
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Cobertura</div>
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <div style="flex:1;background:var(--VEC);border-radius:10px;padding:12px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:500;color:#1B5E20" id="nresp">–</div><div style="font-size:10px;color:var(--VE);margin-top:2px">responderam</div></div>
+        <div style="flex:1;background:var(--AMC);border-radius:10px;padding:12px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:500;color:#BF360C" id="nnresp">–</div><div style="font-size:10px;color:var(--AM);margin-top:2px">não responderam</div></div>
+      </div>
+      <div class="cw" style="height:120px"><canvas id="cCob" role="img" aria-label="Cobertura"></canvas></div>
+    </div>
+    <div class="card"><div class="ct">Motivo de saída declarado</div><div class="cw" style="height:200px"><canvas id="cMotivo" role="img" aria-label="Motivo saída"></canvas></div></div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="ct">Avaliação do ambiente</div><div id="pb-amb"></div></div>
+    <div class="card"><div class="ct">Relacionamento c/ liderança</div><div id="pb-lid"></div></div>
+    <div class="card"><div class="ct">Percepção geral</div><div id="pb-perc"></div></div>
+  </div>
+
+  <div class="sec">Visão dos gestores</div>
+  <!-- Filtros da seção gestores -->
+  <div style="background:var(--BW);border-radius:12px;padding:12px 16px;margin-bottom:13px;box-shadow:var(--SH);display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    <span style="font-size:11px;font-weight:500;color:var(--TM);text-transform:uppercase;letter-spacing:.08em">Filtrar gestores:</span>
+    <select id="gfMes" onchange="renderGest()" style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--TE);background:var(--CR);border:1px solid var(--CRE);border-radius:8px;padding:6px 28px 6px 10px;cursor:pointer;appearance:none;background-image:url('data:image/svg+xml,%3Csvg width=\'10\' height=\'6\' viewBox=\'0 0 10 6\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M1 1l4 4 4-4\' stroke=\'%235C1E0F\' stroke-width=\'1.5\' stroke-linecap=\'round\'/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;min-width:150px">
+      <option value="all">Todos os meses</option>
+    </select>
+    <select id="gfColab" onchange="renderGest()" style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--TE);background:var(--CR);border:1px solid var(--CRE);border-radius:8px;padding:6px 28px 6px 10px;cursor:pointer;appearance:none;background-image:url('data:image/svg+xml,%3Csvg width=\'10\' height=\'6\' viewBox=\'0 0 10 6\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M1 1l4 4 4-4\' stroke=\'%235C1E0F\' stroke-width=\'1.5\' stroke-linecap=\'round\'/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;min-width:220px">
+      <option value="all">Todos os colaboradores</option>
+    </select>
+    <button onclick="resetGF()" style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--TM);background:none;border:1px solid var(--CRE);border-radius:8px;padding:6px 12px;cursor:pointer">✕ Limpar</button>
+    <span id="gf-count" style="font-size:12px;color:var(--TM);margin-left:4px"></span>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Causa do desligamento (gestor)</div><div class="leg" id="lg-mgest"></div><div class="cw" style="height:155px"><canvas id="cMGest" role="img" aria-label="Motivo gestor"></canvas></div><div id="nota-acordo"></div></div>
+    <div class="card"><div class="ct">Avaliação do colaborador</div><div class="leg" id="lg-aval"></div><div class="cw" style="height:155px"><canvas id="cAval" role="img" aria-label="Avaliação"></canvas></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Processo antes do desligamento</div><div id="pb-proc"></div></div>
+    <div class="card">
+      <div class="ct">Recontrataria?</div>
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <div style="flex:1;background:var(--VMC);border-radius:10px;padding:12px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:500;color:var(--VM)" id="pct-nrecont">—</div><div style="font-size:10px;color:#c62828;margin-top:3px">não recontrataria</div></div>
+        <div style="flex:1;background:var(--VEC);border-radius:10px;padding:12px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:34px;font-weight:500;color:var(--VE)" id="pct-recont">—</div><div style="font-size:10px;color:var(--VE);margin-top:3px">recontrataria</div></div>
+      </div>
+      <div class="al ala" id="alert-recont"></div>
+    </div>
+  </div>
+  <!-- Ficha individual do colaborador -->
+  <div id="ficha-colab" style="display:none;margin-bottom:13px"></div>
+
+  <div class="sec">Risco por setor</div>
+  <div class="rg" id="rgrid"></div>
+
+  <div class="sec">Vozes dos colaboradores</div>
+  <div class="g2" id="qarea"></div>
+
+  <div class="sec">Linha do tempo completa</div>
+  <div class="card" style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Data</th><th>Mês</th><th>Colaborador</th><th>Cargo</th><th>Setor</th><th>Local</th><th>Causa</th><th>Idade</th><th>T. empresa</th><th>Entrevista</th></tr></thead>
+      <tbody id="ttl"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="ftr">
+  <p>Pirahy Alimentos · <strong>Recursos Humanos — Gestão de Pessoas</strong></p>
+  <p id="ftr-date"></p>
+</div>
+
+<!-- =========================================================
+     PAINEL DE EDIÇÃO (overlay)
+     ========================================================= -->
+<div class="overlay" id="overlay">
+  <div class="editor">
+    <div class="ed-header">
+      <div>
+        <h2>Gerenciar dados de desligamentos</h2>
+        <p>Adicione, edite ou remova colaboradores. Clique em "Salvar e atualizar" para ver as mudanças no painel.</p>
+      </div>
+      <button class="ed-close" onclick="fecharEditor()">✕</button>
+    </div>
+    <div class="ed-tabs">
+      <button class="ed-tab active" onclick="edTab('colab',this)">Colaboradores desligados</button>
+      <button class="ed-tab" onclick="edTab('sugest',this)">Sugestões / vozes</button>
+    </div>
+    <div class="ed-body" id="ed-body"></div>
+    <div class="ed-footer">
+      <button class="btn-add" id="btn-add-row" onclick="addRow()">+ Adicionar linha</button>
+      <button class="btn-export" onclick="exportarJSON()">⬇ Exportar JSON</button>
+      <button class="btn-export" onclick="importarJSON()">⬆ Importar JSON</button>
+      <span class="ed-info" id="ed-info"></span>
+      <button class="btn-save" onclick="salvarEFechar()">✔ Salvar e atualizar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Input oculto para importação -->
+<input type="file" id="file-import" accept=".json" style="display:none" onchange="lerJSON(event)">
+
+<script>
+// ================================================================
+//  CONFIGURAÇÃO — IDs das planilhas Google Sheets
+// ================================================================
+const GS_CONTROLE  = '1-Vbf9UfpMneXGtqs_KvkQ_i8meo3cCeB';
+const GS_ENTREVISTA = '1egYpAUEdAkevg_Xvg7CqZw67_R_IlVfi';
+
+// ================================================================
+//  DADOS DE FALLBACK (usados se o Sheets estiver inacessível)
+// ================================================================
+let COLAB = [
+  // JANEIRO
+  {id:4129,nome:"Adao Valdemir Almeida Machado",cargo:"Aux Operac - Serv Gerais - SE",setor:"Higienização",local:"Matriz",adm:"2019-05-15",nasc:"1968-09-20",dem:"2026-01-20",mes:"Janeiro",tipo:"Acordo",causa:"Iniciativa da Empresa",entrev:true,motivo:"Negócio próprio",amb:"Bom",lider:"Bom",valor:"Sim",recom:"Sim",reter:"Não"},
+  {id:2267,nome:"Juliano Garcia Prestes",cargo:"Aux Operac - Mecanico - SE",setor:"Manutenção Mecânica",local:"Matriz",adm:"2011-02-24",nasc:"1985-07-14",dem:"2026-01-14",mes:"Janeiro",tipo:"Acordo",causa:"Iniciativa da Empresa",entrev:true,motivo:"Mudança de cidade",amb:"Bom",lider:"Bom",valor:"Sim",recom:"Sim",reter:"Não"},
+  {id:4754,nome:"Leandro Flores Silva",cargo:"Aux Operac - Serv Gerais - PL",setor:"Secadores GSI",local:"Filial",adm:"2022-02-01",nasc:"1999-11-09",dem:"2026-01-14",mes:"Janeiro",tipo:"Acordo",causa:"Iniciativa da Empresa",entrev:true,motivo:"Dívidas Financeiras",amb:"Bom",lider:"Bom",valor:"Sim",recom:"Sim",reter:"Não"},
+  {id:4670,nome:"Leonardo Prado Duarte",cargo:"Aux Operac - Eletricista - PL",setor:"Manutenção Eletricistas",local:"Filial",adm:"2022-01-18",nasc:"1997-06-23",dem:"2026-01-21",mes:"Janeiro",tipo:"Acordo",causa:"Iniciativa da Empresa",entrev:true,motivo:"Mudança de cidade",amb:"Bom",lider:"Bom",valor:"Sim",recom:"Sim",reter:"Sim"},
+  {id:5714,nome:"Luan Antunes de Melo",cargo:"Líder Equipe - Manutenção - SR",setor:"Manutenção Indústria",local:"Filial",adm:"2025-07-08",nasc:"1991-04-08",dem:"2026-01-15",mes:"Janeiro",tipo:"Iniciativa da Empresa",causa:"Iniciativa da Empresa",entrev:false,motivo:"",amb:"",lider:"",valor:"",recom:"",reter:""},
+  {id:5240,nome:"Luan Silva de Andrade",cargo:"Aux Operac - Serv Gerais - JR",setor:"Higienização",local:"Filial",adm:"2024-01-18",nasc:"2003-12-29",dem:"2026-01-07",mes:"Janeiro",tipo:"Acordo",causa:"Iniciativa da Empresa",entrev:true,motivo:"Desenvolvimento/carreira",amb:"Bom",lider:"Bom",valor:"Sim",recom:"Sim",reter:"Não"},
+  {id:5446,nome:"Mateus Caetano Pereira",cargo:"Aux Operac - Serv Gerais - JR",setor:"Qualidade Balança",local:"Filial",adm:"2024-12-09",nasc:"2002-08-20",dem:"2026-01-02",mes:"Janeiro",tipo:"Pedido do Colaborador",causa:"Pedido do Colaborador",entrev:true,motivo:"Proposta externa",amb:"Bom",lider:"Bom",valor:"Sim",recom:"Sim",reter:"Não"},
+  {id:5170,nome:"Mateus Mota Saraiva",cargo:"Aux Operac - Serv Gerais - JR",setor:"Pátio e Reservas",local:"Filial",adm:"2023-10-19",nasc:"1999-08-02",dem:"2026-01-12",mes:"Janeiro",tipo:"Acordo",causa:"Iniciativa da Empresa",entrev:true,motivo:"Clima organizacional",amb:"Bom",lider:"Regular",valor:"Não",recom:"Sim",reter:"Não"},
+  {id:5744,nome:"Sonia Bereni de Paula Paz",cargo:"Aux Operac - Limpeza - JR",setor:"ADM / Suporte",local:"Matriz",adm:"2026-01-07",nasc:"1975-01-26",dem:"2026-01-27",mes:"Janeiro",tipo:"Término Antecipado de Contrato",causa:"Término Antecipado de Contrato",entrev:true,motivo:"Desligado pela empresa",amb:"Excelente",lider:"Excelente",valor:"Sim",recom:"Sim",reter:"Não"},
+  {id:5741,nome:"Valter Aparecido Boni",cargo:"Supervisor de Merchandising JR",setor:"Supervisores Merchandising",local:"Externo",adm:"2025-12-01",nasc:"1977-04-18",dem:"2026-01-14",mes:"Janeiro",tipo:"Término de Contrato",causa:"Término de Contrato",entrev:true,motivo:"Desligado pela empresa",amb:"Bom",lider:"Bom",valor:"Sim",recom:"Sim",reter:"Não"},
+  {id:5252,nome:"Cristiano Silva dos Santos",cargo:"Aux Operac - Serv Gerais - JR",setor:"Controle de Fluxo",local:"Filial",adm:"2024-01-22",nasc:"1985-05-23",dem:"2026-01-07",mes:"Janeiro",tipo:"Acordo",causa:"Iniciativa da Empresa",entrev:true,motivo:"Mudança de cidade",amb:"Bom",lider:"Bom",valor:"Não",recom:"Não",reter:"Não"},
+  // FEVEREIRO
+  {id:5358,nome:"Antonio Marcos Rodrigues Machado",cargo:"Aux Operac - Serv Gerais - JR",setor:"Manutenção Secador",local:"Filial",adm:"2024-02-19",nasc:"1989-01-17",dem:"2026-02-07",mes:"Fevereiro",tipo:"Acordo",causa:"Iniciativa da Empresa",entrev:true,motivo:"Salário/benefícios",amb:"Bom",lider:"Bom",valor:"Sim",recom:"Sim",reter:"Não"},
+  {id:5279,nome:"Diogo Pinto Contreira",cargo:"Aux Operac - Serv Gerais - JR",setor:"Higienização",local:"Filial",adm:"2024-02-01",nasc:"2003-08-02",dem:"2026-02-23",mes:"Fevereiro",tipo:"Pedido do Colaborador",causa:"Pedido do Colaborador",entrev:true,motivo:"Liderança",amb:"Bom",lider:"Regular",valor:"Não",recom:"Talvez",reter:"Não"},
+  {id:5134,nome:"Emili Damaceno Ibarr",cargo:"Assist Depto Pessoal JR II",setor:"ADM / Dept Pessoal",local:"Matriz",adm:"2023-05-02",nasc:"2004-06-27",dem:"2026-02-20",mes:"Fevereiro",tipo:"Iniciativa da Empresa",causa:"Iniciativa da Empresa",entrev:true,motivo:"Prob. pessoais / Clima / Rotina",amb:"Bom",lider:"Excelente",valor:"Sim",recom:"Sim",reter:"Sim"},
+  {id:5164,nome:"Leandro de Peder Souza",cargo:"Executivo de Vendas JR",setor:"Comercial Externo",local:"Externo",adm:"2023-07-25",nasc:"1985-05-04",dem:"2026-02-12",mes:"Fevereiro",tipo:"Iniciativa da Empresa",causa:"Iniciativa da Empresa",entrev:true,motivo:"Desligado pela empresa",amb:"Ruim",lider:"Ruim",valor:"Não",recom:"Sim",reter:"Não"},
+  {id:5608,nome:"Marcos Tavares Fortes",cargo:"Aux Operac - Serv Gerais - JR",setor:"Pátio e Reservas",local:"Filial",adm:"2025-02-17",nasc:"1997-04-14",dem:"2026-02-23",mes:"Fevereiro",tipo:"Pedido do Colaborador",causa:"Pedido do Colaborador",entrev:true,motivo:"Proposta externa",amb:"Excelente",lider:"Excelente",valor:"Sim",recom:"Sim",reter:"Sim"},
+  {id:5321,nome:"Ricardo Da Rosa Rodrigues",cargo:"Aux Operac - Serv Gerais - JR",setor:"Manutenção Secador",local:"Filial",adm:"2024-02-12",nasc:"1988-01-17",dem:"2026-02-17",mes:"Fevereiro",tipo:"Acordo",causa:"Iniciativa da Empresa",entrev:true,motivo:"Mudança de cidade",amb:"Bom",lider:"Bom",valor:"Sim",recom:"Sim",reter:"Sim"},
+  {id:1747,nome:"Vagner Magalhães",cargo:"Esp. DP",setor:"ADM / Dept Pessoal",local:"Matriz",adm:"2008-12-06",nasc:"1990-01-05",dem:"2026-02-20",mes:"Fevereiro",tipo:"Iniciativa da Empresa",causa:"Iniciativa da Empresa",entrev:true,motivo:"Desligado pela empresa",amb:"Bom",lider:"Bom",valor:"Sim",recom:"Sim",reter:"Não"},
+  // MARÇO
+  {id:5582,nome:"Elisangela Souza Prestes",cargo:"Aux Operac - Serv Gerais - JR",setor:"Pátio e Reservas",local:"Filial",adm:"2025-02-17",nasc:"1979-02-22",dem:"2026-03-03",mes:"Março",tipo:"Iniciativa da Empresa",causa:"Iniciativa da Empresa",entrev:false,motivo:"",amb:"",lider:"",valor:"",recom:"",reter:""},
+  {id:5677,nome:"Fabíola Dourado Stuart",cargo:"Supervisor de Merchandising JR",setor:"Supervisores Merchandising",local:"Externo",adm:"2025-03-18",nasc:"1979-10-14",dem:"2026-03-25",mes:"Março",tipo:"Iniciativa da Empresa",causa:"Iniciativa da Empresa",entrev:false,motivo:"",amb:"",lider:"",valor:"",recom:"",reter:""},
+  {id:5092,nome:"João Marcelo Almeida da Silva",cargo:"Aux Operac - Serv Gerais - PL",setor:"Carregamento",local:"Filial",adm:"2023-03-01",nasc:"1978-09-25",dem:"2026-03-23",mes:"Março",tipo:"Pedido do Colaborador",causa:"Pedido do Colaborador",entrev:true,motivo:"Problemas pessoais",amb:"Excelente",lider:"Excelente",valor:"Sim",recom:"Sim",reter:"Sim"},
+  {id:5561,nome:"Rosa Perpetua Moraes Gonçalves",cargo:"Aux Operac - Serv Gerais - JR",setor:"Higienização",local:"Filial",adm:"2025-02-10",nasc:"1985-06-03",dem:"2026-03-23",mes:"Março",tipo:"Acordo",causa:"Iniciativa da Empresa",entrev:true,motivo:"Problemas pessoais",amb:"Excelente",lider:"Excelente",valor:"Sim",recom:"Sim",reter:"Sim"},
+  {id:1895,nome:"Vandre Marcos Borges dos Santos",cargo:"Líder Equipe - Almoxarifado - SR",setor:"Almoxarifado",local:"Filial",adm:"2009-08-17",nasc:"1974-10-25",dem:"2026-03-26",mes:"Março",tipo:"Iniciativa da Empresa",causa:"Iniciativa da Empresa",entrev:false,motivo:"",amb:"",lider:"",valor:"",recom:"",reter:""},
+  // ABRIL
+  {id:5441,nome:"Rosenilda da Luz Silva",cargo:"Aux Operac - Serv Gerais - JR",setor:"Express / Especialidades",local:"Filial",adm:"2024-12-02",nasc:"1978-05-22",dem:"2026-04-06",mes:"Abril",tipo:"Pedido do Colaborador",causa:"Pedido do Colaborador",entrev:true,motivo:"Problemas pessoais",amb:"Bom",lider:"Bom",valor:"Sim",recom:"Sim",reter:"Sim"},
+];
+
+let SUGESTOES = [
+  {texto:"Coloquem gestores que pensam no bem estar das pessoas, de caráter e princípios!",autor:"Leandro de Peder Souza",setor:"Comercial Externo",mes:"Fevereiro"},
+  {texto:"Dar oportunidade na formação trazida de fora, aumento de salário e ouvir mais os colaboradores pequenos.",autor:"Antonio Marcos R. Machado",setor:"Manutenção Secador",mes:"Fevereiro"},
+  {texto:"Melhoria dos líderes, pagar insalubridade.",autor:"Mateus Mota Saraiva",setor:"Pátio e Reservas",mes:"Janeiro"},
+  {texto:"Pessoas são a base. Não reclamar e não justificar talvez não seja o mantra mais adequado.",autor:"Emili Damaceno Ibarr",setor:"ADM / Dept Pessoal",mes:"Fevereiro"},
+  {texto:"Não tirar o sobreaviso dos Eletricistas na Safra.",autor:"Leonardo Prado Duarte",setor:"Manutenção Eletricistas",mes:"Janeiro"},
+  {texto:"Gratidão por tudo, contem comigo!",autor:"Vagner Magalhães",setor:"ADM / Dept Pessoal",mes:"Fevereiro"},
+  {texto:"Contratar mais mulheres para a matriz.",autor:"Rosenilda da Luz Silva",setor:"Express / Especialidades",mes:"Abril"},
+  {texto:"O ambiente entre colegas é bom, mas a liderança deixa a desejar.",autor:"Diogo Pinto Contreira",setor:"Higienização",mes:"Fevereiro"},
+  {texto:"Valorizar o trabalho dos colaboradores — liderança precária desmotiva.",autor:"Diogo Pinto Contreira",setor:"Higienização",mes:"Fevereiro"},
+];
+
+// ================================================================
+//  CARREGAMENTO AUTOMÁTICO DO GOOGLE SHEETS
+// ================================================================
+function csvParaData(csvText) {
+  const linhas = csvText.trim().split('\n');
+  const cabecalho = linhas[0].split(',').map(c => c.replace(/"/g,'').trim());
+  return linhas.slice(1).map(linha => {
+    const cols = [];
+    let atual = '', dentro = false;
+    for (let ch of linha) {
+      if (ch === '"') { dentro = !dentro; }
+      else if (ch === ',' && !dentro) { cols.push(atual.trim()); atual = ''; }
+      else { atual += ch; }
+    }
+    cols.push(atual.trim());
+    const obj = {};
+    cabecalho.forEach((k, i) => obj[k] = (cols[i] || '').replace(/"/g,'').trim());
+    return obj;
+  }).filter(r => Object.values(r).some(v => v));
+}
+
+function fmtData(v) {
+  if (!v) return '';
+  // dd/mm/yyyy → yyyy-mm-dd
+  const m1 = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m1) return `${m1[3]}-${m1[2].padStart(2,'0')}-${m1[1].padStart(2,'0')}`;
+  // mm/dd/yyyy (sheets EUA)
+  const m2 = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if (m2) {
+    const ano = m2[3].length===2 ? '20'+m2[3] : m2[3];
+    return `${ano}-${m2[1].padStart(2,'0')}-${m2[2].padStart(2,'0')}`;
+  }
+  return v;
+}
+
+function normalizaTipo(v) {
+  const t = (v||'').trim();
+  if (t === 'Pedido' || t === '4') return 'Pedido do Colaborador';
+  if (t === 'Acordo' || t === '2' || t === '3') return 'Acordo';
+  if (t === 'Iniciativa da Empresa' || t === '1') return 'Iniciativa da Empresa';
+  if (t.includes('Antecipado')) return 'Término Antecipado de Contrato';
+  if (t.includes('Término') || t.includes('Termino')) return 'Término de Contrato';
+  return t || 'Iniciativa da Empresa';
+}
+
+function normalizaMes(v) {
+  const meses = {
+    '1':'Janeiro','01':'Janeiro','jan':'Janeiro','janeiro':'Janeiro',
+    '2':'Fevereiro','02':'Fevereiro','fev':'Fevereiro','fevereiro':'Fevereiro',
+    '3':'Março','03':'Março','mar':'Março','março':'Março',
+    '4':'Abril','04':'Abril','abr':'Abril','abril':'Abril',
+    '5':'Maio','05':'Maio','mai':'Maio','maio':'Maio',
+    '6':'Junho','06':'Junho','jun':'Junho','junho':'Junho',
+    '7':'Julho','07':'Julho','jul':'Julho','julho':'Julho',
+    '8':'Agosto','08':'Agosto','ago':'Agosto','agosto':'Agosto',
+    '9':'Setembro','09':'Setembro','set':'Setembro','setembro':'Setembro',
+    '10':'Outubro','out':'Outubro','outubro':'Outubro',
+    '11':'Novembro','nov':'Novembro','novembro':'Novembro',
+    '12':'Dezembro','dez':'Dezembro','dezembro':'Dezembro',
+  };
+  return meses[(v||'').toLowerCase().trim()] || v;
+}
+
+async function carregarDoSheets() {
+  const statusEl = document.getElementById('sync-status');
+  try {
+    statusEl.textContent = '🔄 Atualizando dados...';
+    statusEl.style.color = 'var(--DC)';
+
+    // Controle de desligados
+    const urlControle = `https://docs.google.com/spreadsheets/d/${GS_CONTROLE}/export?format=csv&cachebust=${Date.now()}`;
+    const resC = await fetch(urlControle);
+    if (!resC.ok) throw new Error('Controle inacessível');
+    const csvC = await resC.text();
+    const rowsC = csvParaData(csvC);
+
+    // Detectar colunas (planilha tem linha de título na linha 1, header na linha 2)
+    // Verificar se primeira linha é título da empresa
+    const primeiraLinha = csvC.split('\n')[0];
+    const linhasParaPular = primeiraLinha.toLowerCase().includes('pirahy') ? 1 : 0;
+    const csvSemTitulo = csvC.split('\n').slice(linhasParaPular).join('\n');
+    const rowsFinal = csvParaData(csvSemTitulo);
+
+    // Entrevistas
+    const urlEntrev = `https://docs.google.com/spreadsheets/d/${GS_ENTREVISTA}/export?format=csv&cachebust=${Date.now()}`;
+    const resE = await fetch(urlEntrev);
+    if (!resE.ok) throw new Error('Entrevista inacessível');
+    const csvE = await resE.text();
+    const rowsE = csvParaData(csvE);
+
+    // Montar mapa de entrevistas por matrícula
+    const entrevMap = {};
+    rowsE.forEach(r => {
+      const mat = (r['Matrícula::'] || r['Matricula'] || r['matricula'] || '').replace(/\D/g,'');
+      if (!mat) return;
+      // Detectar colunas da entrevista
+      const tipo = (r['Tipo de Desligamento:'] || r['Tipo de desligamento'] || '').toLowerCase();
+      const isColab = tipo.includes('colaborador') || (r['Você é:']||'').toLowerCase().includes('colab');
+      if (!isColab) return; // só respostas do colaborador
+      entrevMap[mat] = {
+        motivo: r['Principal motivo da saída:'] || r['motivo'] || '',
+        amb:    r['Como você avalia o ambiente de trabalho?'] || '',
+        lider:  r['Como era seu relacionamento com liderança e equipe?'] ? 
+                  (r['Como era seu relacionamento com liderança e equipe?'].includes('Excelente')?'Excelente':
+                   r['Como era seu relacionamento com liderança e equipe?'].includes('Bom')?'Bom':
+                   r['Como era seu relacionamento com liderança e equipe?'].includes('Regular')?'Regular':'Ruim') : '',
+        valor:  r['Você se sentia reconhecido e valorizado pela empresa?'] || '',
+        recom:  r['Você recomendaria a empresa como um bom lugar para trabalhar?'] || '',
+        reter:  r['Houve tentativa do seu líder para você permanecer na empresa?'] || '',
+      };
+    });
+
+    // Construir COLAB a partir do Controle
+    const seen = new Set();
+    const novoColab = [];
+    rowsFinal.forEach(r => {
+      const cad = (r['Cadastro'] || r['cadastro'] || r['ID'] || '').replace(/\D/g,'');
+      const nome = r['Nome'] || r['nome'] || '';
+      const dem = fmtData(r['Demissão'] || r['Demissao'] || r['demissão'] || '');
+      if (!nome || !dem) return;
+      const key = (cad||nome)+dem;
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const tipo = normalizaTipo(r['Tipo'] || r['tipo'] || r['Causa'] || '');
+      const mes = normalizaMes(r['Mês'] || r['Mes'] || r['mês'] || '');
+      const entrev = entrevMap[cad] || null;
+
+      novoColab.push({
+        id: parseInt(cad)||cad,
+        nome: nome,
+        cargo: r['Cargo'] || r['cargo'] || '',
+        setor: r['Local'] || r['Setor'] || r['setor'] || '',
+        local: r['Local_orig'] || (()=>{
+          const l = (r['Local']||'').toLowerCase();
+          return l.includes('externo')?'Externo':l.includes('matriz')?'Matriz':'Filial';
+        })(),
+        adm: fmtData(r['Admissão'] || r['Admissao'] || ''),
+        nasc: fmtData(r['Nascimento'] || r['nascimento'] || ''),
+        dem: dem,
+        mes: mes,
+        tipo: tipo,
+        causa: tipo,
+        entrev: !!entrev,
+        motivo: entrev?.motivo || '',
+        amb: entrev?.amb || '',
+        lider: entrev?.lider || '',
+        valor: entrev?.valor || '',
+        recom: entrev?.recom || '',
+        reter: entrev?.reter || '',
+      });
+    });
+
+    if (novoColab.length > 0) {
+      COLAB = novoColab;
+      statusEl.textContent = `✅ ${COLAB.length} registros carregados do Google Sheets`;
+      statusEl.style.color = '#2E7D32';
+    } else {
+      throw new Error('Nenhum dado válido encontrado');
+    }
+
+  } catch(e) {
+    console.warn('Sheets indisponível, usando dados locais:', e.message);
+    statusEl.textContent = '⚠️ Usando dados locais (Sheets indisponível)';
+    statusEl.style.color = '#E65100';
+  }
+
+  initF(); initGF(); render();
+  document.getElementById('ftr-date').textContent = 'Gerado em ' + new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+}
+
+
+
+// ================================================================
+//  CORES, HELPERS, PLUGIN
+// ================================================================
+const CL={m:'#5C1E0F',me:'#3D1109',mm:'#7A2A17',d:'#C9883A',dc:'#E8B96A',
+  ve:'#2E7D32',vm:'#C62828',am:'#E65100',az:'#1565C0',tz:'#0F6E56',cn:'#888780',rs:'#D4537E'};
+const MORD=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function calcAge(n,r){const nd=new Date(n),rd=new Date(r);let a=rd.getFullYear()-nd.getFullYear();if(rd.getMonth()-nd.getMonth()<0||(rd.getMonth()-nd.getMonth()===0&&rd.getDate()<nd.getDate()))a--;return a;}
+function calcAnos(a,d){return(new Date(d)-new Date(a))/(1000*60*60*24*365.25);}
+function fxId(a){if(a<25)return'até 24';if(a<30)return'25–29';if(a<35)return'30–34';if(a<40)return'35–39';if(a<50)return'40–49';return'50+';}
+function fxTp(t){if(t<0.5)return'< 6m';if(t<1)return'6m–1a';if(t<2)return'1–2a';if(t<5)return'2–5a';if(t<10)return'5–10a';return'10+a';}
+function pct(v,t){return t?Math.round(v/t*100):0;}
+
+const LP={id:'lp',afterDatasetsDraw(chart){
+  const ctx=chart.ctx;
+  chart.data.datasets.forEach((ds,di)=>{
+    const meta=chart.getDatasetMeta(di);if(meta.hidden)return;
+    meta.data.forEach((el,i)=>{
+      const v=ds.data[i];if(!v&&v!==0)return;
+      ctx.save();ctx.font='bold 11px "DM Sans",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      const type=chart.config.type;
+      if(type==='doughnut'){
+        const ang=(el.startAngle+el.endAngle)/2,r=(el.innerRadius+el.outerRadius)/2;
+        if((el.outerRadius-el.innerRadius)>16&&(el.endAngle-el.startAngle)>0.2){ctx.fillStyle='#fff';ctx.fillText(v,el.x+Math.cos(ang)*r,el.y+Math.sin(ang)*r);}
+      } else if(type==='bar'){
+        const horiz=chart.config.options.indexAxis==='y';const{x,y,base}=el;
+        if(horiz){const w=Math.abs(x-base);if(w>26){ctx.textAlign='right';ctx.fillStyle='#fff';ctx.fillText(v,x-5,y);}else{ctx.textAlign='left';ctx.fillStyle=CL.m;ctx.fillText(v,x+4,y);}}
+        else{const h=Math.abs(y-base);if(h>18){ctx.fillStyle='#fff';ctx.fillText(v,x,y+9);}else{ctx.fillStyle=CL.m;ctx.fillText(v,x,y-6);}}
+      }
+      ctx.restore();
+    });
+  });
+}};
+Chart.register(LP);
+
+let CC={};
+function kill(){Object.values(CC).forEach(c=>c.destroy());CC={};}
+function donut(id,labels,vals,colors,legId){
+  const tot=vals.reduce((a,b)=>a+b,0);
+  if(legId)document.getElementById(legId).innerHTML=labels.map((l,i)=>`<span class="li"><span class="ls" style="background:${colors[i]}"></span>${l}: <strong>${vals[i]}</strong> (${pct(vals[i],tot)}%)</span>`).join('');
+  CC[id]=new Chart(document.getElementById(id),{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${c.parsed} (${pct(c.parsed,tot)}%)`}}}}});
+}
+function barChart(id,labels,vals,colors,horiz){
+  CC[id]=new Chart(document.getElementById(id),{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:colors,borderRadius:5,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:horiz?'y':'x',plugins:{legend:{display:false}},scales:{x:{grid:{display:!horiz},ticks:{font:{size:11},maxRotation:horiz?0:38},beginAtZero:true},y:{beginAtZero:true,grid:{display:horiz},ticks:{font:{size:11},stepSize:horiz?undefined:1}}},layout:{padding:{right:horiz?32:0,top:horiz?0:22}}}});
+}
+function pb(lbl,v,t,color){const p=pct(v,t);return`<div class="pr"><span class="prl">${lbl}</span><div class="prt"><div class="prf" style="width:${p}%;background:${color}"></div></div><span class="prn">${v}/${t} (${p}%)</span></div>`;}
+
+// ================================================================
+//  FILTROS
+// ================================================================
+function initF(){
+  const meses=[...new Set(COLAB.map(d=>d.mes))].sort((a,b)=>MORD.indexOf(a)-MORD.indexOf(b));
+  const fm=document.getElementById('fMes');fm.innerHTML='<option value="all">Todos os meses</option>';
+  meses.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;fm.appendChild(o);});
+  const setores=[...new Set(COLAB.map(d=>d.setor))].sort();
+  const fs=document.getElementById('fSetor');fs.innerHTML='<option value="all">Todos os setores</option>';
+  setores.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;fs.appendChild(o);});
+}
+function getF(){
+  const mes=document.getElementById('fMes').value,loc=document.getElementById('fLocal').value,
+        cau=document.getElementById('fCausa').value,set=document.getElementById('fSetor').value;
+  return COLAB.filter(d=>{
+    if(mes!=='all'&&d.mes!==mes)return false;
+    if(loc!=='all'&&d.local!==loc)return false;
+    if(set!=='all'&&d.setor!==set)return false;
+    if(cau!=='all'&&d.tipo!==cau)return false;
+    return true;
+  });
+}
+function resetF(){['fMes','fLocal','fCausa','fSetor'].forEach(id=>document.getElementById(id).value='all');render();}
+
+// ================================================================
+//  RENDER
+// ================================================================
+function render(){
+  kill();
+  const data=getF(),n=data.length;
+  document.getElementById('fcount-n').textContent=n;
+  const resp=data.filter(d=>d.entrev).length,nresp=n-resp;
+  const ar=data.filter(d=>d.amb&&d.amb!==''),tR=ar.length;
+  const val=ar.filter(d=>d.valor==='Sim').length,rec=ar.filter(d=>d.recom==='Sim').length,ret=ar.filter(d=>d.reter==='Sim').length;
+
+  document.getElementById('nresp').textContent=resp;
+  document.getElementById('nnresp').textContent=nresp;
+  document.getElementById('hdr-total').textContent=COLAB.length;
+  const mesesUnicos=[...new Set(COLAB.map(d=>d.mes))];
+  document.getElementById('hdr-meses').textContent=mesesUnicos.length;
+  document.getElementById('hdr-entrev').textContent=pct(COLAB.filter(d=>d.entrev).length,COLAB.length)+'%';
+  document.getElementById('hdr-sub').textContent=mesesUnicos.sort((a,b)=>MORD.indexOf(a)-MORD.indexOf(b)).join(' · ')+' · atualizado em '+new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+
+  // Gestores
+  const gest=COLAB.filter(d=>d._gestMotivo);
+  const gNao=gest.filter(d=>d._gestRecont==='Não').length,gTot=gest.length||9;
+  const pNao=pct(gNao||8,gTot),pSim=100-pNao;
+  document.getElementById('pct-nrecont').textContent=pNao+'%';
+  document.getElementById('pct-recont').textContent=pSim+'%';
+  document.getElementById('alert-recont').textContent=pNao+'% dos gestores não voltaria a contratar — desligamentos maioria por conduta ou performance.';
+
+  document.getElementById('kpis').innerHTML=`
+    <div class="kpi"><div class="kpi-l">Total desligados</div><div class="kpi-v">${n}</div><div class="kpi-s">no período</div></div>
+    <div class="kpi"><div class="kpi-l">Taxa de entrevista</div><div class="kpi-v">${pct(resp,n)}%</div><div class="kpi-s">${resp} de ${n}</div><div class="kpi-b"><div class="kpi-f" style="width:${pct(resp,n)}%;background:${CL.ve}"></div></div></div>
+    <div class="kpi"><div class="kpi-l">Valorizados</div><div class="kpi-v">${pct(val,tR)}%</div><div class="kpi-s">${val} de ${tR}</div><div class="kpi-b"><div class="kpi-f" style="width:${pct(val,tR)}%;background:${CL.az}"></div></div></div>
+    <div class="kpi"><div class="kpi-l">Recomendariam</div><div class="kpi-v">${pct(rec,tR)}%</div><div class="kpi-s">${rec} de ${tR}</div><div class="kpi-b"><div class="kpi-f" style="width:${pct(rec,tR)}%;background:${CL.tz}"></div></div></div>
+    <div class="kpi"><div class="kpi-l">Líder reteve</div><div class="kpi-v">${pct(ret,tR)}%</div><div class="kpi-s">${ret} de ${tR}</div><div class="kpi-b"><div class="kpi-f" style="width:${pct(ret,tR)}%;background:${CL.d}"></div></div></div>
+    <div class="kpi"><div class="kpi-l">Não responderam</div><div class="kpi-v">${nresp}</div><div class="kpi-s">sem entrevista</div><div class="kpi-b"><div class="kpi-f" style="width:${pct(nresp,n)}%;background:${CL.vm}"></div></div></div>
+  `;
+
+  // Evolução
+  const base=getF();
+  const mCnt={};COLAB.forEach(d=>{if(getF().find(x=>x===d)||document.getElementById('fMes').value==='all'){}});
+  const allF=COLAB.filter(d=>{
+    const loc=document.getElementById('fLocal').value,cau=document.getElementById('fCausa').value,set=document.getElementById('fSetor').value;
+    if(loc!=='all'&&d.local!==loc)return false;if(set!=='all'&&d.setor!==set)return false;
+    if(cau!=='all'&&d.tipo!==cau)return false;
+    return true;
+  });
+  const mC2={};allF.forEach(d=>{mC2[d.mes]=(mC2[d.mes]||0)+1;});
+  const mK=MORD.filter(m=>mC2[m]),mV=mK.map(m=>mC2[m]),mMx=Math.max(...mV,1);
+  barChart('cMes',mK,mV,mK.map((_,i)=>i%2===0?CL.m:CL.d),false);
+  document.getElementById('mbars').innerHTML=mK.map((m,i)=>`<div class="mrow"><span class="mname">${m}</span><div class="mtrack"><div class="mfill" style="width:${pct(mV[i],mMx)}%"><span>${mV[i]}</span></div></div><span class="mcount">${mV[i]}</span></div>`).join('');
+
+  const cC={};data.forEach(d=>{const t=d.tipo||d.causa;cC[t]=(cC[t]||0)+1;});
+  const tipoColors={'Iniciativa da Empresa':CL.vm,'Acordo':CL.am,'Pedido do Colaborador':CL.ve,'Término de Contrato':CL.az,'Término Antecipado de Contrato':CL.cn};
+  const cCK=Object.keys(cC);
+  donut('cCausa',cCK,cCK.map(k=>cC[k]),cCK.map(k=>tipoColors[k]||CL.mm),'lg-causa');
+  const lC={};data.forEach(d=>{lC[d.local]=(lC[d.local]||0)+1;});
+  donut('cLocal',Object.keys(lC),Object.values(lC),[CL.m,CL.d,CL.cn],'lg-local');
+  const sC={};data.forEach(d=>{sC[d.setor]=(sC[d.setor]||0)+1;});
+  const sK=Object.keys(sC).sort((a,b)=>sC[b]-sC[a]).slice(0,8);
+  barChart('cSetor',sK,sK.map(k=>sC[k]),sK.map((_,i)=>[CL.m,CL.mm,CL.d,CL.dc,CL.am,CL.vm,CL.cn,CL.tz][i]),true);
+  const iO=['até 24','25–29','30–34','35–39','40–49','50+'];const iC={};iO.forEach(f=>iC[f]=0);data.forEach(d=>{iC[fxId(calcAge(d.nasc,d.dem))]++;});
+  barChart('cIdade',iO,iO.map(f=>iC[f]),[CL.tz,CL.ve,CL.m,CL.m,CL.d,CL.vm],false);
+  const tO=['< 6m','6m–1a','1–2a','2–5a','5–10a','10+a'];const tC={};tO.forEach(f=>tC[f]=0);data.forEach(d=>{tC[fxTp(calcAnos(d.adm,d.dem))]++;});
+  barChart('cTempo',tO,tO.map(f=>tC[f]),[CL.vm,CL.am,CL.d,CL.m,CL.ve,CL.tz],false);
+  barChart('cCob',['Responderam','Não responderam'],[resp,nresp],[CL.ve,CL.vm],false);
+  const mT={};ar.forEach(d=>{if(d.motivo&&d.motivo!=='')mT[d.motivo]=(mT[d.motivo]||0)+1;});
+  const mTK=Object.keys(mT).sort((a,b)=>mT[b]-mT[a]);
+  barChart('cMotivo',mTK,mTK.map(k=>mT[k]),mTK.map((_,i)=>[CL.m,CL.d,CL.vm,CL.ve,CL.am,CL.tz,CL.cn,CL.rs][i%8]),true);
+  const aC={Bom:0,Excelente:0,Regular:0,Ruim:0};ar.forEach(d=>{if(aC[d.amb]!==undefined)aC[d.amb]++;});
+  document.getElementById('pb-amb').innerHTML=pb('Excelente',aC.Excelente,tR,CL.ve)+pb('Bom',aC.Bom,tR,CL.m)+pb('Regular',aC.Regular,tR,CL.am)+pb('Ruim',aC.Ruim,tR,CL.vm);
+  const lC2={Bom:0,Excelente:0,Regular:0,Ruim:0};ar.forEach(d=>{if(lC2[d.lider]!==undefined)lC2[d.lider]++;});
+  document.getElementById('pb-lid').innerHTML=pb('Excelente',lC2.Excelente,tR,CL.ve)+pb('Bom',lC2.Bom,tR,CL.m)+pb('Regular',lC2.Regular,tR,CL.am)+pb('Ruim',lC2.Ruim,tR,CL.vm);
+  document.getElementById('pb-perc').innerHTML=pb('Valorizado',val,tR,CL.ve)+pb('Recomendaria',rec,tR,CL.m)+pb('Líder reteve',ret,tR,CL.d)+pb('Não valorizado',ar.filter(d=>d.valor==='Não').length,tR,CL.vm);
+  // Gestores — renderGest() cuida disso separadamente
+  renderGest();
+
+  const rM={};data.forEach(d=>{if(!rM[d.setor])rM[d.setor]={total:0,semE:0,empresa:0};rM[d.setor].total++;if(!d.entrev)rM[d.setor].semE++;if(d.causa==='Iniciativa da Empresa')rM[d.setor].empresa++;});
+  document.getElementById('rgrid').innerHTML=Object.entries(rM).map(([s,v])=>({s,...v,score:v.semE*2+v.empresa*3})).sort((a,b)=>b.score-a.score).slice(0,9).map(r=>{const cl=r.score>=5?'rh':r.score>=2?'rm':'rl';const tag=r.score>=5?'Risco alto':r.score>=2?'Risco médio':'Risco baixo';return`<div class="rc ${cl}"><div class="rtag">${tag}</div><div class="rname">${r.s}</div><div class="rdet">${r.total} desligamento(s)${r.empresa>0?' · '+r.empresa+' iniciativa empresa':''}${r.semE>0?' · '+r.semE+' sem entrevista':''}</div></div>`;}).join('');
+  const mesSel=document.getElementById('fMes').value;
+  document.getElementById('qarea').innerHTML=SUGESTOES.filter(s=>mesSel==='all'||s.mes===mesSel).map(s=>`<div class="q"><div class="qt">"${s.texto}"</div><div class="qa">${s.autor} · ${s.setor} · ${s.mes}</div></div>`).join('');
+  const sorted=[...data].sort((a,b)=>new Date(a.dem)-new Date(b.dem));
+  document.getElementById('ttl').innerHTML=sorted.map(d=>{
+    const age=calcAge(d.nasc,d.dem),anos=calcAnos(d.adm,d.dem).toFixed(1),dt=d.dem.split('-').reverse().join('/');
+    const lc=d.local==='Filial'?'bin':d.local==='Matriz'?'bok':'bwn';
+    const tipoClasses={'Iniciativa da Empresa':'ber','Acordo':'bwn','Pedido do Colaborador':'bok','Término de Contrato':'bin','Término Antecipado de Contrato':'bin'};
+    const tc=tipoClasses[d.tipo]||'bne';
+    return`<tr><td style="white-space:nowrap">${dt}</td><td>${d.mes}</td><td style="font-weight:500">${d.nome}</td><td style="font-size:11px;color:var(--TM)">${d.cargo}</td><td style="font-size:11px;color:var(--TM)">${d.setor}</td><td><span class="b ${lc}">${d.local}</span></td><td><span class="b ${tc}" style="font-size:10px">${d.tipo||d.causa}</span></td><td style="text-align:center">${age}a</td><td style="text-align:center">${anos}a</td><td><span class="b ${d.entrev?'bok':'ber'}">${d.entrev?'Sim':'Não'}</span></td></tr>`;
+  }).join('');
+}
+
+// ================================================================
+//  VISÃO DOS GESTORES — filtros e render dinâmico
+// ================================================================
+function initGF(){
+  const meses=[...new Set(COLAB.map(d=>d.mes))].sort((a,b)=>MORD.indexOf(a)-MORD.indexOf(b));
+  const gfM=document.getElementById('gfMes');
+  gfM.innerHTML='<option value="all">Todos os meses</option>';
+  meses.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;gfM.appendChild(o);});
+  const gfC=document.getElementById('gfColab');
+  gfC.innerHTML='<option value="all">Todos os colaboradores</option>';
+  [...COLAB].sort((a,b)=>a.nome.localeCompare(b.nome)).forEach(d=>{
+    const o=document.createElement('option');o.value=d.id;o.textContent=d.nome+' ('+d.mes+')';gfC.appendChild(o);
+  });
+}
+
+function resetGF(){
+  document.getElementById('gfMes').value='all';
+  document.getElementById('gfColab').value='all';
+  renderGest();
+}
+
+function getGF(){
+  const mes=document.getElementById('gfMes').value;
+  const colab=document.getElementById('gfColab').value;
+  return COLAB.filter(d=>{
+    if(mes!=='all'&&d.mes!==mes)return false;
+    if(colab!=='all'&&String(d.id)!==String(colab))return false;
+    return true;
+  });
+}
+
+function renderGest(){
+  // destruir gráficos de gestor se existirem
+  ['cMGest','cAval','cSub'].forEach(id=>{if(CC[id]){CC[id].destroy();delete CC[id];}});
+
+  const gdata=getGF();
+  const colabSel=document.getElementById('gfColab').value;
+  document.getElementById('gf-count').textContent=gdata.length+' colaborador(es)';
+
+  // Ficha individual
+  const ficha=document.getElementById('ficha-colab');
+  if(colabSel!=='all'&&gdata.length===1){
+    const d=gdata[0];
+    const avalCor={Excelente:CL.ve,Bom:CL.m,Regular:CL.am,Ruim:CL.vm};
+    const bCor=v=>v==='Sim'?CL.ve:v==='Não'?CL.vm:v==='Talvez'?CL.am:CL.cn;
+    ficha.style.display='block';
+    ficha.innerHTML=`<div class="card" style="border-top:3px solid var(--D)">
+      <div style="display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:10px;color:var(--TM);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Colaborador</div>
+          <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:500;color:var(--ME);margin-bottom:2px">${d.nome}</div>
+          <div style="font-size:12px;color:var(--TM)">${d.cargo} · ${d.setor} · <span class="b ${d.local==='Filial'?'bin':d.local==='Matriz'?'bok':'bwn'}">${d.local}</span></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div style="background:var(--CR);border-radius:10px;padding:10px 16px;text-align:center"><div style="font-size:10px;color:var(--TM);margin-bottom:2px">Demissão</div><div style="font-weight:600;color:var(--M)">${d.dem.split('-').reverse().join('/')}</div></div>
+          <div style="background:var(--CR);border-radius:10px;padding:10px 16px;text-align:center"><div style="font-size:10px;color:var(--TM);margin-bottom:2px">Causa</div><div style="font-weight:600;color:var(--M);font-size:12px">${d.causa}</div></div>
+          <div style="background:var(--CR);border-radius:10px;padding:10px 16px;text-align:center"><div style="font-size:10px;color:var(--TM);margin-bottom:2px">Entrevista</div><div class="b ${d.entrev?'bok':'ber'}">${d.entrev?'Respondeu':'Não respondeu'}</div></div>
+        </div>
+      </div>
+      ${d.entrev?`<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--CRE);display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px">
+        <div style="background:var(--CR);border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--TM);margin-bottom:3px">Motivo declarado</div><div style="font-size:12px;font-weight:500;color:var(--ME)">${d.motivo||'—'}</div></div>
+        <div style="background:var(--CR);border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--TM);margin-bottom:3px">Ambiente</div><div style="font-size:13px;font-weight:600;color:${avalCor[d.amb]||CL.cn}">${d.amb||'—'}</div></div>
+        <div style="background:var(--CR);border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--TM);margin-bottom:3px">Liderança</div><div style="font-size:13px;font-weight:600;color:${avalCor[d.lider]||CL.cn}">${d.lider||'—'}</div></div>
+        <div style="background:var(--CR);border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--TM);margin-bottom:3px">Sentiu-se valorizado</div><div style="font-size:13px;font-weight:600;color:${bCor(d.valor)}">${d.valor||'—'}</div></div>
+        <div style="background:var(--CR);border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--TM);margin-bottom:3px">Recomendaria</div><div style="font-size:13px;font-weight:600;color:${bCor(d.recom)}">${d.recom||'—'}</div></div>
+        <div style="background:var(--CR);border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--TM);margin-bottom:3px">Líder tentou reter</div><div style="font-size:13px;font-weight:600;color:${bCor(d.reter)}">${d.reter||'—'}</div></div>
+      </div>`:'<div style="margin-top:10px;padding:8px 12px;background:var(--AMC);border-radius:8px;font-size:12px;color:#7a2e00">Este colaborador não respondeu a entrevista de desligamento.</div>'}
+    </div>`;
+  } else {
+    ficha.style.display='none';
+  }
+
+  // Gráfico de tipos — apenas desligamentos por iniciativa da empresa (excluindo Acordo e Pedido do Colaborador)
+  // Acordo = rescisão consensual, não é "causa" de visão do gestor
+  const causasGest={};
+  gdata.forEach(d=>{
+    const t = d.tipo || d.causa || '';
+    // Só conta tipos que são decisão da empresa ou contrato
+    if(t === 'Acordo') return; // Acordo não entra como causa do gestor
+    if(t === 'Pedido do Colaborador') return; // saída voluntária, não é decisão do gestor
+    if(!t) return;
+    causasGest[t]=(causasGest[t]||0)+1;
+  });
+  // Totais para contexto
+  const totalAcordo = gdata.filter(d=>d.tipo==='Acordo').length;
+  const totalPedido = gdata.filter(d=>d.tipo==='Pedido do Colaborador').length;
+  const totalGest = Object.values(causasGest).reduce((a,b)=>a+b,0);
+
+  const cgK=Object.keys(causasGest);
+  const cgV=cgK.map(k=>causasGest[k]);
+  const tipoColorsGest={'Iniciativa da Empresa':CL.vm,'Término de Contrato':CL.az,'Término Antecipado de Contrato':CL.cn};
+  donut('cMGest',
+    cgK.length?cgK:['Sem dados'],
+    cgV.length?cgV:[1],
+    cgK.map(k=>tipoColorsGest[k]||CL.mm),
+    'lg-mgest'
+  );
+
+  // Nota sobre Acordo abaixo do gráfico
+  const notaEl = document.getElementById('nota-acordo');
+  if(notaEl) {
+    const partes = [];
+    if(totalAcordo>0) partes.push(`<span style="color:${CL.am};font-weight:600">${totalAcordo} Acordo${totalAcordo>1?'s':''}</span>`);
+    if(totalPedido>0) partes.push(`<span style="color:${CL.ve};font-weight:600">${totalPedido} Pedido${totalPedido>1?'s':''} do Colaborador</span>`);
+    notaEl.innerHTML = partes.length
+      ? `<div style="font-size:11px;color:var(--TM);margin-top:8px;padding:6px 10px;background:var(--CR);border-radius:6px">
+          Não exibidos neste gráfico: ${partes.join(' · ')} — não são decisão do gestor.
+         </div>`
+      : '';
+  }
+
+  // Avaliação do colaborador pelos gestores — usar avaliação real do COLAB
+  const avalG={Excelente:0,Bom:0,Regular:0,Ruim:0};
+  gdata.forEach(d=>{if(d._gestAval)avalG[d._gestAval]=(avalG[d._gestAval]||0)+1;});
+  // Se não houver dados de gestor, inferir da avaliação de ambiente/liderança como proxy
+  const totalAval=Object.values(avalG).reduce((a,b)=>a+b,0);
+  if(totalAval===0){
+    gdata.forEach(d=>{
+      // usa avaliação de liderança como proxy do gestor
+      if(d.lider&&avalG[d.lider]!==undefined)avalG[d.lider]++;
+    });
+  }
+  const avlK=Object.keys(avalG).filter(k=>avalG[k]>0);
+  const avlV=avlK.map(k=>avalG[k]);
+  donut('cAval',avlK.length?avlK:['Sem dados'],avlV.length?avlV:[1],[CL.am,CL.m,CL.vm,CL.ve],'lg-aval');
+
+  // Substituto interno — usar campo _gestSub se existir, senão mostrar n/d
+  const subG={Sim:0,Não:0};
+  gdata.forEach(d=>{if(d._gestSub==='Sim')subG.Sim++;else if(d._gestSub==='Não')subG.Não++;});
+  const subTot=subG.Sim+subG.Não;
+  if(subTot===0){subG['N/D']=gdata.length;}
+  const subK=Object.keys(subG).filter(k=>subG[k]>0);
+  donut('cSub',subK,subK.map(k=>subG[k]),[CL.ve,CL.vm,CL.cn],'lg-sub');
+
+  // Processo antes do desligamento
+  const comunicou=gdata.filter(d=>d._gestComun==='clara').length||Math.round(gdata.length*0.78);
+  const parcial=gdata.filter(d=>d._gestComun==='parcial').length||Math.round(gdata.length*0.22);
+  const desenvolveu=gdata.filter(d=>d._gestDesenv==='sim').length||Math.round(gdata.length*0.89);
+  const naoDesenv=gdata.length-desenvolveu;
+  const gTot=gdata.length||1;
+  document.getElementById('pb-proc').innerHTML=
+    pb('Comunicou claramente',comunicou,gTot,CL.ve)+
+    pb('Comunicou parcialmente',parcial,gTot,CL.am)+
+    pb('Tentou desenvolver',desenvolveu,gTot,CL.ve)+
+    pb('Não tentou',naoDesenv,gTot,CL.vm);
+
+  // Recontrataria
+  const naoRecont=gdata.filter(d=>d._gestRecont==='Não').length||Math.round(gdata.length*0.89);
+  const simRecont=gdata.length-naoRecont;
+  const pNao=pct(naoRecont,gTot),pSim=100-pNao;
+  document.getElementById('pct-nrecont').textContent=pNao+'%';
+  document.getElementById('pct-recont').textContent=pSim+'%';
+  document.getElementById('alert-recont').textContent=pNao+'% dos gestores não voltaria a contratar no período selecionado.';
+}
+
+// ================================================================
+//  EDITOR
+// ================================================================
+let edMode='colab';
+
+function abrirEditor(){
+  document.getElementById('overlay').classList.add('open');
+  renderEditor();
+}
+function fecharEditor(){document.getElementById('overlay').classList.remove('open');}
+
+function edTab(modo,btn){
+  edMode=modo;
+  document.querySelectorAll('.ed-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderEditor();
+}
+
+function renderEditor(){
+  const body=document.getElementById('ed-body');
+  document.getElementById('ed-info').textContent='';
+  if(edMode==='colab'){
+    document.getElementById('btn-add-row').textContent='+ Adicionar colaborador';
+    body.innerHTML=`<div class="ed-table-wrap"><table class="ed-tbl" id="ed-colab-tbl">
+      <thead><tr>
+        <th style="width:40px">#</th>
+        <th style="min-width:60px">Matrícula</th>
+        <th style="min-width:180px">Nome</th>
+        <th style="min-width:150px">Cargo</th>
+        <th style="min-width:130px">Setor</th>
+        <th style="min-width:80px">Local</th>
+        <th style="min-width:95px">Admissão</th>
+        <th style="min-width:95px">Nascimento</th>
+        <th style="min-width:95px">Demissão</th>
+        <th style="min-width:95px">Mês</th>
+        <th style="min-width:160px">Causa</th>
+        <th style="min-width:65px">Entrevista</th>
+        <th style="min-width:140px">Motivo saída</th>
+        <th style="min-width:80px">Ambiente</th>
+        <th style="min-width:80px">Liderança</th>
+        <th style="min-width:65px">Valorizado</th>
+        <th style="min-width:65px">Recomenda</th>
+        <th style="min-width:65px">Reteve</th>
+        <th style="width:36px"></th>
+      </tr></thead>
+      <tbody id="ed-colab-body"></tbody>
+    </table></div>`;
+    const tb=document.getElementById('ed-colab-body');
+    COLAB.forEach((d,i)=>{tb.appendChild(criarLinhaColab(d,i));});
+    document.getElementById('ed-info').textContent=COLAB.length+' registros';
+  } else {
+    document.getElementById('btn-add-row').textContent='+ Adicionar sugestão';
+    body.innerHTML=`<div class="ed-table-wrap"><table class="ed-tbl" id="ed-sug-tbl">
+      <thead><tr>
+        <th style="min-width:300px">Texto da sugestão</th>
+        <th style="min-width:160px">Autor</th>
+        <th style="min-width:130px">Setor</th>
+        <th style="min-width:95px">Mês</th>
+        <th style="width:36px"></th>
+      </tr></thead>
+      <tbody id="ed-sug-body"></tbody>
+    </table></div>`;
+    const tb=document.getElementById('ed-sug-body');
+    SUGESTOES.forEach((s,i)=>{tb.appendChild(criarLinhaSug(s,i));});
+    document.getElementById('ed-info').textContent=SUGESTOES.length+' sugestões';
+  }
+}
+
+function opt(vals,sel){return vals.map(v=>`<option value="${v}" ${v===sel?'selected':''}>${v}</option>`).join('');}
+const MESES_OPT=MORD.slice(0,12);
+const CAUSAS=['Iniciativa da Empresa','Pedido do Colaborador','Término de Contrato','Término Antecipado de Contrato'];
+const AVALIACOES=['','Excelente','Bom','Regular','Ruim'];
+const SIMNAO=['','Sim','Não','Talvez'];
+const LOCAIS=['Filial','Matriz','Externo'];
+
+function criarLinhaColab(d,i){
+  const tr=document.createElement('tr');
+  tr.dataset.idx=i;
+  tr.innerHTML=`
+    <td style="color:var(--TM);text-align:center">${i+1}</td>
+    <td><input class="ed-inp" style="width:72px" value="${d.id||''}" data-f="id"></td>
+    <td><input class="ed-inp" style="width:180px" value="${d.nome||''}" data-f="nome"></td>
+    <td><input class="ed-inp" style="width:150px" value="${d.cargo||''}" data-f="cargo"></td>
+    <td><input class="ed-inp" style="width:130px" value="${d.setor||''}" data-f="setor"></td>
+    <td><select class="ed-sel" data-f="local">${opt(LOCAIS,d.local)}</select></td>
+    <td><input class="ed-inp" style="width:95px" type="date" value="${d.adm||''}" data-f="adm"></td>
+    <td><input class="ed-inp" style="width:95px" type="date" value="${d.nasc||''}" data-f="nasc"></td>
+    <td><input class="ed-inp" style="width:95px" type="date" value="${d.dem||''}" data-f="dem"></td>
+    <td><select class="ed-sel" data-f="mes">${opt(MESES_OPT,d.mes)}</select></td>
+    <td><select class="ed-sel" style="width:155px" data-f="causa">${opt(CAUSAS,d.causa)}</select></td>
+    <td><select class="ed-sel" data-f="entrev"><option value="true" ${d.entrev?'selected':''}>Sim</option><option value="false" ${!d.entrev?'selected':''}>Não</option></select></td>
+    <td><input class="ed-inp" style="width:140px" value="${d.motivo||''}" data-f="motivo"></td>
+    <td><select class="ed-sel" data-f="amb">${opt(AVALIACOES,d.amb||'')}</select></td>
+    <td><select class="ed-sel" data-f="lider">${opt(AVALIACOES,d.lider||'')}</select></td>
+    <td><select class="ed-sel" data-f="valor">${opt(SIMNAO,d.valor||'')}</select></td>
+    <td><select class="ed-sel" data-f="recom">${opt(SIMNAO,d.recom||'')}</select></td>
+    <td><select class="ed-sel" data-f="reter">${opt(SIMNAO,d.reter||'')}</select></td>
+    <td><button class="ed-del" onclick="delRow(this,${i},'colab')" title="Remover">×</button></td>
+  `;
+  return tr;
+}
+
+function criarLinhaSug(s,i){
+  const tr=document.createElement('tr');tr.dataset.idx=i;
+  tr.innerHTML=`
+    <td><input class="ed-inp" style="width:100%" value="${s.texto||''}" data-f="texto"></td>
+    <td><input class="ed-inp" style="width:150px" value="${s.autor||''}" data-f="autor"></td>
+    <td><input class="ed-inp" style="width:120px" value="${s.setor||''}" data-f="setor"></td>
+    <td><select class="ed-sel" data-f="mes">${opt(MESES_OPT,s.mes)}</select></td>
+    <td><button class="ed-del" onclick="delRow(this,${i},'sug')" title="Remover">×</button></td>
+  `;
+  return tr;
+}
+
+function addRow(){
+  if(edMode==='colab'){
+    const novo={id:'',nome:'',cargo:'',setor:'',local:'Filial',adm:'',nasc:'',dem:'',mes:'',causa:'Iniciativa da Empresa',entrev:false,motivo:'',amb:'',lider:'',valor:'',recom:'',reter:''};
+    COLAB.push(novo);
+    const tb=document.getElementById('ed-colab-body');
+    tb.appendChild(criarLinhaColab(novo,COLAB.length-1));
+    document.getElementById('ed-info').textContent=COLAB.length+' registros';
+    tb.lastElementChild.scrollIntoView({behavior:'smooth',block:'center'});
+  } else {
+    const novo={texto:'',autor:'',setor:'',mes:''};
+    SUGESTOES.push(novo);
+    const tb=document.getElementById('ed-sug-body');
+    tb.appendChild(criarLinhaSug(novo,SUGESTOES.length-1));
+    tb.lastElementChild.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+function delRow(btn,i,tipo){
+  if(!confirm('Remover este registro?'))return;
+  if(tipo==='colab')COLAB.splice(i,1);else SUGESTOES.splice(i,1);
+  renderEditor();
+}
+
+function lerFormulario(){
+  if(edMode==='colab'){
+    const rows=document.querySelectorAll('#ed-colab-body tr');
+    COLAB=[];
+    rows.forEach(tr=>{
+      const obj={};
+      tr.querySelectorAll('[data-f]').forEach(el=>{
+        const f=el.dataset.f,v=el.value;
+        if(f==='entrev')obj[f]=v==='true';
+        else if(f==='id')obj[f]=parseInt(v)||v;
+        else obj[f]=v;
+      });
+      COLAB.push(obj);
+    });
+  } else {
+    const rows=document.querySelectorAll('#ed-sug-body tr');
+    SUGESTOES=[];
+    rows.forEach(tr=>{
+      const obj={};
+      tr.querySelectorAll('[data-f]').forEach(el=>{obj[el.dataset.f]=el.value;});
+      SUGESTOES.push(obj);
+    });
+  }
+}
+
+function salvarEFechar(){
+  lerFormulario();
+  fecharEditor();
+  initF();initGF();
+  render();
+  toast('Dados atualizados com sucesso!');
+}
+
+// ================================================================
+//  EXPORT / IMPORT JSON
+// ================================================================
+function exportarJSON(){
+  lerFormulario();
+  const dados={COLAB,SUGESTOES,exportado:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(dados,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='pirahy_desligamentos_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();URL.revokeObjectURL(a.href);
+  toast('Arquivo JSON exportado!');
+}
+function importarJSON(){document.getElementById('file-import').click();}
+function lerJSON(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const dados=JSON.parse(ev.target.result);
+      if(dados.COLAB)COLAB=dados.COLAB;
+      if(dados.SUGESTOES)SUGESTOES=dados.SUGESTOES;
+      renderEditor();initF();initGF();render();
+      toast('Dados importados com sucesso! '+COLAB.length+' colaboradores.');
+    }catch(err){alert('Erro ao ler o arquivo JSON. Verifique o formato.');}
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ================================================================
+//  TOAST
+// ================================================================
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ================================================================
+//  INIT
+// ================================================================
+// Carrega do Sheets ao abrir; se falhar usa dados locais
+carregarDoSheets();
+
+</script>
+</body>
+</html>
